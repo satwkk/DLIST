@@ -3,6 +3,10 @@
 #include <string.h>
 #include <stdint.h>
 
+/// =============================================================================
+/// ============================== STRUCTS ======================================
+/// =============================================================================
+
 typedef struct 
 {
     uint8_t* data;
@@ -13,6 +17,10 @@ typedef struct
 } __dynamic_list;
 
 typedef __dynamic_list dlist;
+
+/// =============================================================================
+/// ============================== MACROS =======================================
+/// =============================================================================
 
 #define DLIST_PUSH(p_dlist, data_type, value) \
 {\
@@ -32,10 +40,32 @@ __make_dlist(sizeof(data_type) * count, sizeof(data_type));
 #define DLIST_GET(p_dlist, index) \
 __get_data(p_dlist, index);\
 
+/// =============================================================================
+/// ============================== PUBLIC =======================================
+/// =============================================================================
+
+/// @brief Frees the dynamic list memory allocations and safely sets it to unused
+void 
+free_dlist(dlist* list) 
+{
+    if (list != NULL && list->data != NULL) 
+    {
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+        list->count = 0;
+    }
+}
+
+/// =============================================================================
+/// ============================== PRIVATE ======================================
+/// =============================================================================
+
 /// @brief Creates a stack allocated dynamic list
 /// @param size size in bytes for amount of memory you want to allocate
 /// @param element_size size of each element that will be pushed
-/// @return 
+/// @note Use DLIST_CREATE macro instead
+/// @return a stack allocated list
 dlist 
 __make_dlist(size_t size, size_t element_size) 
 {
@@ -49,24 +79,19 @@ __make_dlist(size_t size, size_t element_size)
     return list;
 }
 
-void 
-free_dlist(dlist* list) 
-{
-    if (list != NULL && list->data != NULL) 
-    {
-        free(list->data);
-        list->data = NULL;
-        list->size = 0;
-        list->count = 0;
-    }
-}
-
+/// @brief Checks if the dynamic list is full
+/// @return 0 if true else -1
 int 
 __is_full(dlist* list) 
 {
     return (list->itr == list->data + list->size) ? 0 : -1;
 }
 
+/// @brief Copies the contents of memory into the list
+/// @param list The list to copy to
+/// @param data The destination memory region from where data will be copied
+/// @note Use DLIST_PUSH / DLIST_PUSH_PTR macros instead
+/// @return 0 if succeeds else -1
 int 
 __push_dlist(dlist* list, void* data) 
 {
@@ -81,6 +106,11 @@ __push_dlist(dlist* list, void* data)
     return 0;
 }
 
+/// @brief Gets the data at specified index into the dlist
+/// @param list The list from where data will be fetched
+/// @param index The index number of the data we want to get from the list
+/// @note Use DLIST_GET macro instead
+/// @return Data from the list (this needs to be casted back to the type you want)
 void* 
 __get_data(dlist* list, int index) 
 {
