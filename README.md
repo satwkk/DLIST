@@ -4,7 +4,7 @@ Lightweight list implementation in C.
 ## Usage
 You can look at examples inside test.c file
 
-```
+```c
 #include "dynlist.h"
 
 ...
