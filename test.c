@@ -10,7 +10,7 @@ typedef struct
 static void 
 run_struct_test() 
 {
-    printf("===================== RUNNING STRUCT TESTS =============================");
+    printf("===================== RUNNING STRUCT TESTS =============================\n");
     Student s1 = 
     {
         .name = "bob doe",
@@ -40,7 +40,7 @@ run_struct_test()
 static void
 run_int_test()
 {
-    printf("===================== RUNNING INT TESTS ================================");
+    printf("===================== RUNNING INT TESTS ================================\n");
     dlist ints = DLIST_CREATE(int, 10);
     for (size_t i = 0; i < 10; i++) 
     {
@@ -58,7 +58,7 @@ run_int_test()
 static void 
 run_pointer_test()
 {
-    printf("===================== RUNNING POINTER TESTS ================================");
+    printf("===================== RUNNING POINTER TESTS ================================\n");
     dlist ptrs = DLIST_CREATE(void*, 10);
     int x = 1;
 
@@ -70,8 +70,34 @@ run_pointer_test()
     for (size_t i = 0; i < 10; i++)
     {
         int* data = DLIST_GET(&ptrs, i);
-        printf("%d\n", *data);
+        printf("%x\n", *data);
     }
+
+    free_dlist(&ptrs);
+}
+
+static void
+run_resize_test()
+{
+    printf("===================== RUNNING RESIZE TEST ================================\n");
+    dlist list = DLIST_CREATE(int, 3);
+
+    DLIST_PUSH(&list, int, 10);
+    DLIST_PUSH(&list, int, 20);
+    DLIST_PUSH(&list, int, 30);
+    DLIST_PUSH(&list, int, 40);
+    DLIST_PUSH(&list, int, 50);
+    DLIST_PUSH(&list, int, 50);
+    DLIST_PUSH(&list, int, 50);
+    DLIST_PUSH(&list, int, 50);
+
+    for (size_t i = 0; i < list.count; i++)
+    {
+        int* data = DLIST_GET(&list, i);
+        printf("%d -> %d\n", i, *data);
+    }
+
+    free_dlist(&list);
 }
 
 int 
@@ -80,5 +106,6 @@ main()
     run_struct_test();
     run_int_test();
     run_pointer_test();
+    run_resize_test();
     return 0;
 }
